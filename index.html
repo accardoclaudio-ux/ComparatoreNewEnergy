@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>NewEnergy — Confronto Offerta</title>
+<title>NewEnergy — Strumenti Agente</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;600;700&family=Courier+Prime&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
-:root {
+:root{
   --gold:#b8922a;--gold2:#d4a83c;--gold3:#f0c050;
   --green:#3a8a60;--green2:#2e7050;
   --red:#b05050;
@@ -15,322 +15,397 @@
   --dark:#1c201a;--dark2:#262c22;
   --text:#5a5648;--textl:#1e1e14;--textm:#7a7060;
   --border:rgba(0,0,0,.09);
-  --shadow:0 2px 20px rgba(0,0,0,.07);
-  --shadow-lg:0 8px 40px rgba(0,0,0,.13);
+  --shadow:0 2px 18px rgba(0,0,0,.07);
+  --shadow-lg:0 8px 36px rgba(0,0,0,.13);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:'Courier Prime',monospace;min-height:100vh}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Courier Prime',monospace;font-size:14px}
+::-webkit-scrollbar{width:0}
+
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh}
 
 /* HEADER */
-.header{background:linear-gradient(135deg,var(--dark),var(--dark2));padding:26px 22px 22px;padding-top:max(26px,env(safe-area-inset-top));text-align:center}
-.logo-wrap{display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:5px}
-.logo-icon{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:0 4px 14px rgba(184,146,42,.4)}
-.logo-text{font-family:'Playfair Display',serif;font-size:24px;font-weight:300;color:#fff}
+.header{flex-shrink:0;background:linear-gradient(135deg,var(--dark),var(--dark2));padding:20px 20px 0;padding-top:max(20px,env(safe-area-inset-top))}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px}
+.logo-icon{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 3px 12px rgba(184,146,42,.4)}
+.logo-text{font-family:'Playfair Display',serif;font-size:22px;font-weight:300;color:#fff}
 .logo-text span{color:var(--gold2);font-weight:700}
-.header-sub{font-size:9px;letter-spacing:4px;color:rgba(212,168,60,.5);text-transform:uppercase;margin-top:3px}
 
-/* CONTAINER */
-.container{max-width:500px;margin:0 auto;padding:18px 15px 50px}
+/* TOP TABS */
+.top-tabs{display:flex}
+.ttab{flex:1;padding:10px 6px;text-align:center;cursor:pointer;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);border-bottom:2px solid transparent;transition:all .2s;font-family:'Courier Prime',monospace}
+.ttab.active{color:var(--gold2);border-bottom-color:var(--gold2)}
+.ttab .ttico{display:block;font-size:16px;margin-bottom:3px}
+
+/* SCROLL */
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.panel{display:none;padding:15px 13px 50px;max-width:500px;margin:0 auto}
+.panel.active{display:block;animation:fu .25s ease both}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* CARDS */
-.scard{background:#fff;border-radius:15px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow);border:1px solid var(--border)}
-.stitle{font-size:8px;letter-spacing:3px;color:var(--textm);text-transform:uppercase;margin-bottom:13px;display:flex;align-items:center;gap:8px}
+.scard{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.stitle{font-size:8px;letter-spacing:3px;color:var(--textm);text-transform:uppercase;margin-bottom:11px;display:flex;align-items:center;gap:8px}
 .stitle::after{content:'';flex:1;height:1px;background:var(--border)}
 
 /* TOGGLES */
-.tog-row{display:flex;gap:7px;margin-bottom:0}
-.tog-btn{flex:1;padding:10px 6px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;font-size:11px;letter-spacing:1px;text-align:center;transition:all .18s;font-family:'Courier Prime',monospace;color:var(--textm)}
+.tog-row{display:flex;gap:7px}
+.tog-btn{flex:1;padding:9px 6px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;font-size:10px;letter-spacing:1px;text-align:center;transition:all .18s;font-family:'Courier Prime',monospace;color:var(--textm)}
 .tog-btn:active{transform:scale(.95)}
 .tog-btn.on{background:var(--dark);color:var(--gold2);border-color:var(--dark)}
-.tog-btn .ti{font-size:17px;display:block;margin-bottom:3px}
-
-/* PERIOD SEL */
-.period-row{display:flex;gap:7px}
-.period-btn{flex:1;padding:9px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;font-size:10px;letter-spacing:1.5px;text-align:center;font-family:'Courier Prime',monospace;color:var(--textm);transition:all .18s}
-.period-btn.on{background:var(--dark);color:var(--gold2);border-color:var(--dark)}
+.tog-btn .ti{font-size:16px;display:block;margin-bottom:3px}
 
 /* PDF */
-.pdf-zone{border:2px dashed rgba(184,146,42,.3);border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:rgba(184,146,42,.03);transition:all .2s;position:relative}
-.pdf-zone:hover{border-color:var(--gold);background:rgba(184,146,42,.06)}
+.pdf-zone{border:2px dashed rgba(184,146,42,.3);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:rgba(184,146,42,.03);transition:all .2s;position:relative}
 .pdf-zone.ok{border-color:var(--green);background:rgba(58,138,96,.05);border-style:solid}
 .pdf-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.pdf-icon{font-size:26px;margin-bottom:7px}
-.pdf-text{font-size:11px;color:var(--textm);line-height:1.5}
-.pdf-status{font-size:10px;margin-top:7px;min-height:15px;letter-spacing:1px;font-weight:bold}
+.pdf-icon{font-size:24px;margin-bottom:5px}
+.pdf-text{font-size:10px;color:var(--textm);line-height:1.5}
+.pdf-status{font-size:10px;margin-top:6px;min-height:14px;letter-spacing:1px;font-weight:bold}
 .pdf-status.ok{color:var(--green)}
 .pdf-status.err{color:var(--red)}
 
 /* DIVIDERS */
-.vsdiv{display:flex;align-items:center;gap:10px;margin:16px 0 13px}
+.vsdiv{display:flex;align-items:center;gap:9px;margin:13px 0 10px}
 .vsdiv hr{flex:1;border:none;border-top:1px solid var(--border)}
-.vsbadge{font-size:8px;letter-spacing:2.5px;padding:5px 12px;border-radius:20px;white-space:nowrap}
+.vsbadge{font-size:7px;letter-spacing:2.5px;padding:4px 11px;border-radius:20px;white-space:nowrap}
 .vsbadge.old{background:var(--dark);color:rgba(255,255,255,.7)}
 .vsbadge.new{background:var(--green);color:#fff}
 
 /* INPUTS */
-.irow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-.irow.single{grid-template-columns:1fr}
-.irow.triple{grid-template-columns:1fr 1fr 1fr}
-.ifield{display:flex;flex-direction:column;gap:4px}
-.ifield label{font-size:8px;letter-spacing:1.5px;color:#aaa;text-transform:uppercase;line-height:1.3}
-.ifield input{background:var(--bg2);border:1.5px solid var(--border);border-radius:9px;padding:11px 11px;font-size:14px;font-family:'Courier Prime',monospace;color:var(--textl);transition:all .18s;width:100%}
-.ifield input:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(184,146,42,.1)}
-.ifield input::placeholder{color:#bbb}
-.ifield input.prefilled{border-color:rgba(58,138,96,.4);background:rgba(58,138,96,.04)}
+.irow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.irow.s1{grid-template-columns:1fr}
+.irow.s3{grid-template-columns:1fr 1fr 1fr}
+.ifield{display:flex;flex-direction:column;gap:3px}
+.ifield label{font-size:7px;letter-spacing:1.5px;color:#bbb;text-transform:uppercase;line-height:1.3}
+.ifield input{background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;padding:10px;font-size:14px;font-family:'Courier Prime',monospace;color:var(--textl);transition:all .18s;width:100%}
+.ifield input:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(184,146,42,.09)}
+.ifield input::placeholder{color:#ccc}
+.ifield input.pre{border-color:rgba(58,138,96,.45);background:rgba(58,138,96,.05)}
 
 /* HINT */
-.hint{font-size:10px;color:var(--textm);background:rgba(184,146,42,.06);border-radius:8px;padding:9px 11px;margin-bottom:10px;line-height:1.6;border-left:2px solid rgba(184,146,42,.3)}
+.hint{font-size:9px;color:var(--textm);background:rgba(184,146,42,.06);border-radius:7px;padding:8px 10px;margin-bottom:8px;line-height:1.6;border-left:2px solid rgba(184,146,42,.3)}
 
-/* BTN */
-.calc-btn{width:100%;background:linear-gradient(135deg,var(--dark),var(--dark2));color:var(--gold2);border:none;border-radius:13px;padding:15px;font-size:11px;letter-spacing:4px;font-weight:bold;font-family:'Courier Prime',monospace;cursor:pointer;transition:all .18s;box-shadow:0 4px 18px rgba(0,0,0,.18);margin-bottom:18px}
+/* CALC BTN */
+.calc-btn{width:100%;background:linear-gradient(135deg,var(--dark),var(--dark2));color:var(--gold2);border:none;border-radius:12px;padding:14px;font-size:10px;letter-spacing:4px;font-weight:bold;font-family:'Courier Prime',monospace;cursor:pointer;transition:all .18s;box-shadow:0 4px 16px rgba(0,0,0,.16);margin-bottom:15px}
 .calc-btn:active{transform:scale(.98);opacity:.9}
 
 /* PROSPETTO */
-.risultato{display:none;animation:su .35s ease both}
-@keyframes su{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-
-.prospetto{background:linear-gradient(160deg,var(--dark) 0%,#202820 100%);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid rgba(184,146,42,.15)}
-
-.ph{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
-.ph-logo{display:flex;align-items:center;gap:9px}
-.ph-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:16px}
-.ph-text{font-family:'Playfair Display',serif;font-size:17px;font-weight:300;color:#fff}
+.risultato{display:none;animation:fu .3s ease both}
+.prospetto{background:linear-gradient(160deg,var(--dark) 0%,#202820 100%);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid rgba(184,146,42,.15)}
+.ph{padding:17px 17px 13px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
+.ph-logo{display:flex;align-items:center;gap:8px}
+.ph-icon{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:14px}
+.ph-text{font-family:'Playfair Display',serif;font-size:16px;font-weight:300;color:#fff}
 .ph-text span{color:var(--gold2);font-weight:700}
-.ph-date{font-size:8px;color:rgba(255,255,255,.25);letter-spacing:2px;text-align:right}
-
-.pc{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.04)}
-.pc-lbl{font-size:7px;letter-spacing:3px;color:rgba(184,146,42,.4);text-transform:uppercase;margin-bottom:3px}
-.pc-name{font-family:'Playfair Display',serif;font-size:19px;color:#fff;font-weight:300}
-.pc-period{font-size:9px;color:rgba(255,255,255,.25);letter-spacing:2px;margin-top:2px}
-
-.pb{padding:16px 20px}
-
-.psec{margin-bottom:16px}
-.psec-title{font-size:7px;letter-spacing:3px;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.ph-date{font-size:7px;color:rgba(255,255,255,.22);letter-spacing:1.5px;text-align:right}
+.pc{padding:11px 17px;border-bottom:1px solid rgba(255,255,255,.04)}
+.pc-lbl{font-size:7px;letter-spacing:3px;color:rgba(184,146,42,.4);text-transform:uppercase;margin-bottom:2px}
+.pc-name{font-family:'Playfair Display',serif;font-size:18px;color:#fff;font-weight:300}
+.pc-per{font-size:8px;color:rgba(255,255,255,.22);letter-spacing:2px;margin-top:2px}
+.pb{padding:13px 17px}
+.psec{margin-bottom:13px}
+.psec-title{font-size:7px;letter-spacing:3px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:7px}
 .psec-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
-
-.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
-.cmp-box{border-radius:11px;padding:13px}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px}
+.cmp-box{border-radius:10px;padding:12px}
 .cmp-old{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
 .cmp-new{background:rgba(58,138,96,.1);border:1px solid rgba(58,138,96,.25)}
-.cmp-lbl{font-size:7px;letter-spacing:2px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:5px}
-.cmp-val{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#fff;line-height:1}
+.cmp-lbl{font-size:7px;letter-spacing:2px;color:rgba(255,255,255,.28);text-transform:uppercase;margin-bottom:4px}
+.cmp-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;line-height:1}
 .cmp-val.new{color:#6dcf9a}
-.cmp-sub{font-size:8px;color:rgba(255,255,255,.25);margin-top:2px}
-
-.bar-wrap{margin:10px 0 6px}
-.bar-lbls{display:flex;justify-content:space-between;font-size:8px;color:rgba(255,255,255,.25);margin-bottom:5px}
-.bar-track{background:rgba(255,255,255,.07);border-radius:4px;height:9px;overflow:hidden;position:relative}
-.bar-old{height:100%;background:rgba(255,255,255,.18);border-radius:4px;width:100%}
-.bar-new{height:100%;background:linear-gradient(90deg,#3a8a60,#6dcf9a);border-radius:4px;position:absolute;top:0;left:0;transition:width 1s cubic-bezier(.4,0,.2,1) .15s}
-
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.drow{background:rgba(255,255,255,.03);border-radius:7px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center}
+.cmp-sub{font-size:8px;color:rgba(255,255,255,.22);margin-top:2px}
+.bar-wrap{margin:8px 0 5px}
+.bar-lbls{display:flex;justify-content:space-between;font-size:7px;color:rgba(255,255,255,.22);margin-bottom:4px}
+.bar-track{background:rgba(255,255,255,.07);border-radius:3px;height:8px;overflow:hidden;position:relative}
+.bar-old{height:100%;background:rgba(255,255,255,.16);border-radius:3px;width:100%}
+.bar-new{height:100%;background:linear-gradient(90deg,#3a8a60,#6dcf9a);border-radius:3px;position:absolute;top:0;left:0;transition:width 1s cubic-bezier(.4,0,.2,1) .15s}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.drow{background:rgba(255,255,255,.03);border-radius:6px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center}
 .drow.full{grid-column:1/-1}
-.dlbl{font-size:8px;color:rgba(255,255,255,.25);letter-spacing:1px}
-.dval{font-size:12px;color:rgba(255,255,255,.65);font-family:'Playfair Display',serif}
+.dlbl{font-size:7px;color:rgba(255,255,255,.22);letter-spacing:1px}
+.dval{font-size:11px;color:rgba(255,255,255,.6);font-family:'Playfair Display',serif}
+.risp-box{background:linear-gradient(135deg,rgba(184,146,42,.14),rgba(184,146,42,.06));border:1px solid rgba(184,146,42,.28);border-radius:13px;padding:16px;text-align:center;margin-top:3px}
+.risp-lbl{font-size:7px;letter-spacing:3px;color:rgba(184,146,42,.6);text-transform:uppercase;margin-bottom:6px}
+.risp-main{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--gold3);line-height:1}
+.risp-per{font-size:9px;color:rgba(184,146,42,.5);margin-top:3px;letter-spacing:1px}
+.pfoot{padding:10px 17px 13px;border-top:1px solid rgba(255,255,255,.05);text-align:center}
+.pfoot-txt{font-size:7px;color:rgba(255,255,255,.15);letter-spacing:2px;text-transform:uppercase}
 
-.risp-box{background:linear-gradient(135deg,rgba(184,146,42,.14),rgba(184,146,42,.06));border:1px solid rgba(184,146,42,.28);border-radius:14px;padding:18px;text-align:center;margin-top:4px}
-.risp-lbl{font-size:8px;letter-spacing:3px;color:rgba(184,146,42,.6);text-transform:uppercase;margin-bottom:7px}
-.risp-main{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;color:var(--gold3);line-height:1}
-.risp-period{font-size:10px;color:rgba(184,146,42,.5);margin-top:4px;letter-spacing:1px}
+/* SCHEDA CLIENTE */
+.cli-avatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--dark),var(--dark2));display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px;box-shadow:var(--shadow)}
+.cli-nome{font-family:'Playfair Display',serif;font-size:21px;color:var(--textl);text-align:center;margin-bottom:3px;min-height:28px}
+.cli-sub{font-size:9px;color:var(--textm);text-align:center;letter-spacing:2px;margin-bottom:14px;min-height:13px}
+.edit-btn{width:100%;background:var(--dark);color:var(--gold2);border:none;border-radius:10px;padding:11px;font-size:9px;letter-spacing:3px;font-family:'Courier Prime',monospace;cursor:pointer;transition:all .18s}
+.edit-btn:active{opacity:.8}
 
-.pfoot{padding:12px 20px 16px;border-top:1px solid rgba(255,255,255,.05);text-align:center}
-.pfoot-txt{font-size:8px;color:rgba(255,255,255,.18);letter-spacing:2px;text-transform:uppercase}
+.sec-lbl{font-size:8px;letter-spacing:3px;color:var(--textm);text-transform:uppercase;margin:14px 0 7px;display:flex;align-items:center;gap:8px}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* CAMPI COPIABILI */
+.cf{display:flex;align-items:center;gap:9px;background:#fff;border-radius:11px;padding:12px 13px;margin-bottom:7px;cursor:pointer;transition:all .18s;border:1px solid var(--border);box-shadow:0 1px 6px rgba(0,0,0,.04)}
+.cf:active{background:var(--bg2);transform:scale(.98)}
+.cf-left{flex:1;min-width:0}
+.cf-lbl{font-size:7px;letter-spacing:2.5px;color:var(--textm);text-transform:uppercase;margin-bottom:3px}
+.cf-val{font-size:13px;color:var(--textl);font-family:'Courier Prime',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cf-val.empty{color:#ccc;font-style:italic;font-size:11px}
+.cf-ico{font-size:14px;flex-shrink:0;opacity:.35}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex;animation:mbg .2s ease}
+@keyframes mbg{from{opacity:0}to{opacity:1}}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px 17px;padding-bottom:max(20px,env(safe-area-inset-bottom));width:100%;max-width:500px;max-height:90vh;overflow-y:auto;animation:msl .25s ease}
+@keyframes msl{from{transform:translateY(40px)}to{transform:none}}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.modal-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--textl)}
+.modal-close{background:var(--bg2);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:15px;line-height:30px;text-align:center;color:var(--textm)}
+.msec{font-size:7px;letter-spacing:2.5px;color:var(--textm);text-transform:uppercase;margin:13px 0 7px}
+.save-btn{width:100%;background:linear-gradient(135deg,var(--dark),var(--dark2));color:var(--gold2);border:none;border-radius:11px;padding:13px;font-size:10px;letter-spacing:3px;font-family:'Courier Prime',monospace;cursor:pointer;margin-top:8px;transition:all .18s}
+.save-btn:active{opacity:.85}
+
+/* TOAST */
+.toast{position:fixed;bottom:max(28px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--dark);color:var(--gold2);padding:9px 20px;border-radius:20px;font-size:10px;letter-spacing:2px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:300;white-space:nowrap}
+.toast.show{opacity:1}
 
 .hidden{display:none!important}
 </style>
 </head>
 <body>
+<div class="app">
 
 <div class="header">
-  <div class="logo-wrap">
+  <div class="logo-row">
     <div class="logo-icon">⚡</div>
     <div class="logo-text">New<span>Energy</span></div>
   </div>
-  <div class="header-sub">Confronto offerta personalizzato</div>
+  <div class="top-tabs">
+    <div class="ttab active" id="ttab-confronto" onclick="switchTab('confronto')">
+      <span class="ttico">⚡</span>Confronto
+    </div>
+    <div class="ttab" id="ttab-cliente" onclick="switchTab('cliente')">
+      <span class="ttico">👤</span>Cliente
+    </div>
+  </div>
 </div>
 
-<div class="container">
+<div class="scroll-area">
 
-  <!-- CLIENTE -->
-  <div class="scard">
-    <div class="stitle">Cliente</div>
-    <div class="irow single">
-      <div class="ifield">
-        <label>Nome e Cognome</label>
-        <input type="text" id="nomeCliente" placeholder="es. Mario Rossi">
-      </div>
-    </div>
-  </div>
+  <!-- ══ TAB CONFRONTO ══ -->
+  <div class="panel active" id="panel-confronto">
 
-  <!-- PERIODO -->
-  <div class="scard">
-    <div class="stitle">Periodo bolletta</div>
-    <div class="period-row">
-      <div class="period-btn on" id="per-mens" onclick="setPeriod('mensile')">
-        📅 Mensile
-      </div>
-      <div class="period-btn" id="per-bim" onclick="setPeriod('bimestrale')">
-        📅 Bimestrale
-      </div>
-    </div>
-  </div>
-
-  <!-- COSA CONFRONTARE -->
-  <div class="scard">
-    <div class="stitle">Cosa confrontiamo</div>
-    <div class="tog-row">
-      <div class="tog-btn on" id="mode-luce" onclick="toggleMode('luce')">
-        <span class="ti">☀️</span>Luce
-      </div>
-      <div class="tog-btn on" id="mode-gas" onclick="toggleMode('gas')">
-        <span class="ti">🔥</span>Gas
-      </div>
-    </div>
-  </div>
-
-  <!-- PDF -->
-  <div class="scard">
-    <div class="stitle">Carica bolletta PDF</div>
-    <div class="pdf-zone" id="pdfZone">
-      <input type="file" accept=".pdf" id="pdfInput" onchange="handlePDF(this)">
-      <div class="pdf-icon">📄</div>
-      <div class="pdf-text">Tocca per caricare il PDF<br>I dati vengono estratti automaticamente</div>
-      <div class="pdf-status" id="pdfStatus"></div>
-    </div>
-    <div class="hint" style="margin-top:10px;margin-bottom:0">
-      💡 Funziona con bollette digitali native (scaricate dal sito del fornitore). Se è una scansione fotografica, inserisci i dati a mano.
-    </div>
-  </div>
-
-  <!-- LUCE -->
-  <div id="block-luce">
     <div class="scard">
-      <div class="stitle">☀️ Luce — Consumo del periodo</div>
-      <div class="irow">
-        <div class="ifield">
-          <label>Consumo periodo (kWh)</label>
-          <input type="number" id="l-kwh" placeholder="es. 225" step="1">
-        </div>
-        <div class="ifield">
-          <label>Potenza impegnata (kW)</label>
-          <input type="number" id="l-kw" placeholder="es. 3" step="0.5">
-        </div>
-      </div>
-
-      <div class="vsdiv"><hr><div class="vsbadge old">Fornitore attuale</div><hr></div>
-      <div class="irow triple">
-        <div class="ifield">
-          <label>Prezzo (€/kWh)</label>
-          <input type="number" id="l-old-kwh" placeholder="0.2500" step="0.0001">
-        </div>
-        <div class="ifield">
-          <label>Quota fissa (€/anno)</label>
-          <input type="number" id="l-old-fixed" placeholder="es. 144">
-        </div>
-        <div class="ifield">
-          <label>Quota potenza (€/kW/anno)</label>
-          <input type="number" id="l-old-kw" placeholder="es. 28">
-        </div>
-      </div>
-
-      <div class="vsdiv"><hr><div class="vsbadge new">⚡ NewEnergy</div><hr></div>
-      <div class="irow triple">
-        <div class="ifield">
-          <label>Prezzo (€/kWh)</label>
-          <input type="number" id="l-new-kwh" placeholder="0.1190" step="0.0001">
-        </div>
-        <div class="ifield">
-          <label>Quota fissa (€/anno)</label>
-          <input type="number" id="l-new-fixed" placeholder="es. 144">
-        </div>
-        <div class="ifield">
-          <label>Quota potenza (€/kW/anno)</label>
-          <input type="number" id="l-new-kw" placeholder="es. 28">
-        </div>
+      <div class="stitle">Periodo bolletta</div>
+      <div class="tog-row">
+        <div class="tog-btn on" id="per-m" onclick="setPeriod('mensile')">📅 Mensile</div>
+        <div class="tog-btn" id="per-b" onclick="setPeriod('bimestrale')">📅 Bimestrale</div>
       </div>
     </div>
-  </div>
 
-  <!-- GAS -->
-  <div id="block-gas">
     <div class="scard">
-      <div class="stitle">🔥 Gas — Consumo del periodo</div>
-      <div class="irow single">
-        <div class="ifield">
-          <label>Consumo periodo (Smc)</label>
-          <input type="number" id="g-smc" placeholder="es. 80" step="1">
-        </div>
+      <div class="stitle">Cosa confrontiamo</div>
+      <div class="tog-row">
+        <div class="tog-btn on" id="mode-luce" onclick="toggleMode('luce')"><span class="ti">☀️</span>Luce</div>
+        <div class="tog-btn on" id="mode-gas" onclick="toggleMode('gas')"><span class="ti">🔥</span>Gas</div>
       </div>
+    </div>
 
-      <div class="vsdiv"><hr><div class="vsbadge old">Fornitore attuale</div><hr></div>
-      <div class="irow">
-        <div class="ifield">
-          <label>Prezzo (€/Smc)</label>
-          <input type="number" id="g-old-smc" placeholder="0.9500" step="0.0001">
-        </div>
-        <div class="ifield">
-          <label>Quota fissa (€/anno)</label>
-          <input type="number" id="g-old-fixed" placeholder="es. 144">
-        </div>
+    <div class="scard">
+      <div class="stitle">Carica bolletta PDF</div>
+      <div class="pdf-zone" id="pdfZone">
+        <input type="file" accept=".pdf" id="pdfInput" onchange="handlePDF(this)">
+        <div class="pdf-icon">📄</div>
+        <div class="pdf-text">Tocca per caricare il PDF della bolletta<br>I dati vengono estratti automaticamente</div>
+        <div class="pdf-status" id="pdfStatus"></div>
       </div>
+      <div class="hint" style="margin-top:9px;margin-bottom:0">💡 Funziona con PDF digitali nativi. Se è una scansione fotografica inserisci i dati a mano.</div>
+    </div>
 
-      <div class="vsdiv"><hr><div class="vsbadge new">⚡ NewEnergy</div><hr></div>
-      <div class="irow">
-        <div class="ifield">
-          <label>Prezzo (€/Smc)</label>
-          <input type="number" id="g-new-smc" placeholder="0.3500" step="0.0001">
+    <!-- LUCE -->
+    <div id="block-luce">
+      <div class="scard">
+        <div class="stitle">☀️ Luce</div>
+        <div class="irow">
+          <div class="ifield"><label>Consumo periodo (kWh)</label><input type="number" id="l-kwh" placeholder="es. 225"></div>
+          <div class="ifield"><label>Potenza impegnata (kW)</label><input type="number" id="l-kw" placeholder="es. 3" step="0.5"></div>
         </div>
-        <div class="ifield">
-          <label>Quota fissa (€/anno)</label>
-          <input type="number" id="g-new-fixed" placeholder="es. 144">
+        <div class="vsdiv"><hr><div class="vsbadge old">Fornitore attuale</div><hr></div>
+        <div class="hint">Leggi dalla bolletta: <b>Spesa per la vendita di energia elettrica</b> → prezzo €/kWh</div>
+        <div class="irow s3">
+          <div class="ifield"><label>Prezzo energia (€/kWh)</label><input type="number" id="l-old-kwh" placeholder="0.2500" step="0.0001"></div>
+          <div class="ifield"><label>Quota fissa (€/anno)</label><input type="number" id="l-old-fixed" placeholder="es. 144"></div>
+          <div class="ifield"><label>Quota potenza (€/kW/anno)</label><input type="number" id="l-old-kw" placeholder="es. 28"></div>
+        </div>
+        <div class="vsdiv"><hr><div class="vsbadge new">⚡ NewEnergy</div><hr></div>
+        <div class="irow s3">
+          <div class="ifield"><label>Prezzo energia (€/kWh)</label><input type="number" id="l-new-kwh" placeholder="0.1190" step="0.0001"></div>
+          <div class="ifield"><label>Quota fissa (€/anno)</label><input type="number" id="l-new-fixed" placeholder="es. 144"></div>
+          <div class="ifield"><label>Quota potenza (€/kW/anno)</label><input type="number" id="l-new-kw" placeholder="es. 28"></div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- GENERA -->
-  <button class="calc-btn" onclick="calcola()">⚡ GENERA PROSPETTO</button>
-
-  <!-- RISULTATO -->
-  <div class="risultato" id="risultato">
-    <div class="prospetto" id="prospetto">
-      <div class="ph">
-        <div class="ph-logo">
-          <div class="ph-icon">⚡</div>
-          <div class="ph-text">New<span>Energy</span></div>
+    <!-- GAS -->
+    <div id="block-gas">
+      <div class="scard">
+        <div class="stitle">🔥 Gas</div>
+        <div class="irow s1">
+          <div class="ifield"><label>Consumo periodo (Smc)</label><input type="number" id="g-smc" placeholder="es. 80"></div>
         </div>
-        <div class="ph-date" id="ph-date"></div>
-      </div>
-      <div class="pc">
-        <div class="pc-lbl">Proposta per</div>
-        <div class="pc-name" id="pc-name">—</div>
-        <div class="pc-period" id="pc-period"></div>
-      </div>
-      <div class="pb" id="pb-body"></div>
-      <div class="pfoot">
-        <div class="pfoot-txt">NewEnergy — Offerta personalizzata</div>
+        <div class="vsdiv"><hr><div class="vsbadge old">Fornitore attuale</div><hr></div>
+        <div class="hint">Leggi dalla bolletta: <b>Spesa per la vendita di gas naturale</b> → prezzo €/Smc</div>
+        <div class="irow">
+          <div class="ifield"><label>Prezzo gas (€/Smc)</label><input type="number" id="g-old-smc" placeholder="0.9500" step="0.0001"></div>
+          <div class="ifield"><label>Quota fissa (€/anno)</label><input type="number" id="g-old-fixed" placeholder="es. 144"></div>
+        </div>
+        <div class="vsdiv"><hr><div class="vsbadge new">⚡ NewEnergy</div><hr></div>
+        <div class="irow">
+          <div class="ifield"><label>Prezzo gas (€/Smc)</label><input type="number" id="g-new-smc" placeholder="0.3500" step="0.0001"></div>
+          <div class="ifield"><label>Quota fissa (€/anno)</label><input type="number" id="g-new-fixed" placeholder="es. 144"></div>
+        </div>
       </div>
     </div>
+
+    <button class="calc-btn" onclick="calcola()">⚡ GENERA PROSPETTO</button>
+
+    <div class="risultato" id="risultato">
+      <div class="prospetto">
+        <div class="ph">
+          <div class="ph-logo"><div class="ph-icon">⚡</div><div class="ph-text">New<span>Energy</span></div></div>
+          <div class="ph-date" id="ph-date"></div>
+        </div>
+        <div class="pc">
+          <div class="pc-lbl">Proposta per</div>
+          <div class="pc-name" id="pc-name">—</div>
+          <div class="pc-per" id="pc-per"></div>
+        </div>
+        <div class="pb" id="pb-body"></div>
+        <div class="pfoot"><div class="pfoot-txt">NewEnergy — Offerta personalizzata</div></div>
+      </div>
+    </div>
+
   </div>
 
+  <!-- ══ TAB CLIENTE ══ -->
+  <div class="panel" id="panel-cliente">
+
+    <div class="scard" style="text-align:center;padding:20px 16px 16px">
+      <div class="cli-avatar">👤</div>
+      <div class="cli-nome" id="disp-nome">—</div>
+      <div class="cli-sub" id="disp-sub"></div>
+      <button class="edit-btn" onclick="openModal()">✏️ &nbsp;MODIFICA DATI CLIENTE</button>
+    </div>
+
+    <div class="sec-lbl">📋 Anagrafica</div>
+
+    <div class="cf" onclick="copyField('cf-nome','Nome e Cognome')">
+      <div class="cf-left"><div class="cf-lbl">Nome e Cognome</div><div class="cf-val empty" id="cf-nome">Non inserito</div></div>
+      <div class="cf-ico">📋</div>
+    </div>
+    <div class="cf" onclick="copyField('cf-cf','Codice Fiscale')">
+      <div class="cf-left"><div class="cf-lbl">Codice Fiscale</div><div class="cf-val empty" id="cf-cf">Non inserito</div></div>
+      <div class="cf-ico">📋</div>
+    </div>
+    <div class="cf" onclick="copyField('cf-tel','Telefono')">
+      <div class="cf-left"><div class="cf-lbl">Telefono</div><div class="cf-val empty" id="cf-tel">Non inserito</div></div>
+      <div class="cf-ico">📋</div>
+    </div>
+    <div class="cf" onclick="copyField('cf-email','Email')">
+      <div class="cf-left"><div class="cf-lbl">Email</div><div class="cf-val empty" id="cf-email">Non inserito</div></div>
+      <div class="cf-ico">📋</div>
+    </div>
+    <div class="cf" onclick="copyField('cf-ind','Indirizzo')">
+      <div class="cf-left"><div class="cf-lbl">Indirizzo completo</div><div class="cf-val empty" id="cf-ind">Non inserito</div></div>
+      <div class="cf-ico">📋</div>
+    </div>
+
+    <div class="sec-lbl">☀️ Fornitura Luce</div>
+
+    <div class="cf" onclick="copyField('cf-pod','POD')">
+      <div class="cf-left"><div class="cf-lbl">POD (punto di prelievo)</div><div class="cf-val empty" id="cf-pod">Non inserito</div></div>
+      <div class="cf-ico">📋</div>
+    </div>
+    <div class="cf" onclick="copyField('cf-mat-luce','Matricola contatore')">
+      <div class="cf-left"><div class="cf-lbl">Matricola contatore luce</div><div class="cf-val empty" id="cf-mat-luce">Non inserito</div></div>
+      <div class="cf-ico">📋</div>
+    </div>
+
+    <div class="sec-lbl">🔥 Fornitura Gas</div>
+
+    <div class="cf" onclick="copyField('cf-pdr','PDR')">
+      <div class="cf-left"><div class="cf-lbl">PDR (punto di riconsegna)</div><div class="cf-val empty" id="cf-pdr">Non inserito</div></div>
+      <div class="cf-ico">📋</div>
+    </div>
+    <div class="cf" onclick="copyField('cf-mat-gas','Matricola contatore gas')">
+      <div class="cf-left"><div class="cf-lbl">Matricola contatore gas</div><div class="cf-val empty" id="cf-mat-gas">Non inserito</div></div>
+      <div class="cf-ico">📋</div>
+    </div>
+
+  </div>
+
+</div><!-- /scroll-area -->
+</div><!-- /app -->
+
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="bgClick(event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">Dati Cliente</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="msec">Anagrafica</div>
+    <div class="irow s1"><div class="ifield"><label>Nome e Cognome</label><input type="text" id="m-nome" placeholder="Mario Rossi"></div></div>
+    <div class="irow">
+      <div class="ifield"><label>Codice Fiscale</label><input type="text" id="m-cf" placeholder="RSSMRA80A01F205X" oninput="this.value=this.value.toUpperCase()"></div>
+      <div class="ifield"><label>Telefono</label><input type="tel" id="m-tel" placeholder="333 1234567"></div>
+    </div>
+    <div class="irow s1"><div class="ifield"><label>Email</label><input type="email" id="m-email" placeholder="mario@email.it"></div></div>
+    <div class="irow s1"><div class="ifield"><label>Indirizzo completo</label><input type="text" id="m-ind" placeholder="Via Roma 1, 54100 Massa MS"></div></div>
+
+    <div class="msec">☀️ Luce</div>
+    <div class="irow">
+      <div class="ifield"><label>POD</label><input type="text" id="m-pod" placeholder="IT001E12345678" oninput="this.value=this.value.toUpperCase()"></div>
+      <div class="ifield"><label>Matricola contatore</label><input type="text" id="m-mat-luce" placeholder="es. 12345678"></div>
+    </div>
+
+    <div class="msec">🔥 Gas</div>
+    <div class="irow">
+      <div class="ifield"><label>PDR</label><input type="text" id="m-pdr" placeholder="12345678901234"></div>
+      <div class="ifield"><label>Matricola contatore</label><input type="text" id="m-mat-gas" placeholder="es. G4-12345"></div>
+    </div>
+
+    <button class="save-btn" onclick="saveCliente()">✓ &nbsp;SALVA DATI</button>
+  </div>
 </div>
 
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 let modeLuce=true, modeGas=true, periodo='mensile';
-const periodoN={mensile:1, bimestrale:2};
+const mesiN={mensile:1,bimestrale:2};
 
-function setPeriod(p){
-  periodo=p;
-  document.getElementById('per-mens').classList.toggle('on',p==='mensile');
-  document.getElementById('per-bim').classList.toggle('on',p==='bimestrale');
+let cliente={nome:'',cf:'',tel:'',email:'',ind:'',pod:'',matLuce:'',pdr:'',matGas:''};
+
+function loadLS(){ try{ const s=localStorage.getItem('ne_cli2'); if(s) cliente=JSON.parse(s); }catch(e){} }
+function saveLS(){ try{ localStorage.setItem('ne_cli2',JSON.stringify(cliente)); }catch(e){} }
+
+/* TABS */
+function switchTab(t){
+  document.querySelectorAll('.ttab').forEach(b=>b.classList.toggle('active',b.id==='ttab-'+t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+t));
+  document.querySelector('.scroll-area').scrollTop=0;
 }
 
+/* PERIODO / MODE */
+function setPeriod(p){
+  periodo=p;
+  document.getElementById('per-m').classList.toggle('on',p==='mensile');
+  document.getElementById('per-b').classList.toggle('on',p==='bimestrale');
+}
 function toggleMode(m){
   if(m==='luce'){
     modeLuce=!modeLuce;
@@ -343,267 +418,306 @@ function toggleMode(m){
   }
 }
 
-/* ── PDF PARSING ── */
+/* PDF */
 async function handlePDF(input){
-  const file=input.files[0];
-  if(!file) return;
-  const status=document.getElementById('pdfStatus');
+  const file=input.files[0]; if(!file) return;
+  const st=document.getElementById('pdfStatus');
   const zone=document.getElementById('pdfZone');
-  status.textContent='⏳ Lettura in corso...';
-  status.className='pdf-status';
-
-  try {
-    const ab=await file.arrayBuffer();
-    const pdf=await pdfjsLib.getDocument({data:ab}).promise;
-    let txt='';
-    for(let i=1;i<=Math.min(pdf.numPages,4);i++){
+  st.textContent='⏳ Lettura...'; st.className='pdf-status';
+  try{
+    const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+    let lines=[];
+    for(let i=1;i<=Math.min(pdf.numPages,6);i++){
       const pg=await pdf.getPage(i);
       const ct=await pg.getTextContent();
-      txt+=ct.items.map(it=>it.str).join(' ')+'\n';
+      // ricostruisce righe basandosi sulla posizione Y
+      const byY={};
+      for(const it of ct.items){
+        const y=Math.round(it.transform[5]);
+        if(!byY[y]) byY[y]=[];
+        byY[y].push(it.str);
+      }
+      Object.keys(byY).sort((a,b)=>b-a).forEach(y=>lines.push(byY[y].join(' ')));
     }
-
+    const txt=lines.join('\n');
     const found=parseBolletta(txt);
     if(found>0){
-      status.textContent=`✓ Estratti ${found} dati dalla bolletta`;
-      status.className='pdf-status ok';
-      zone.classList.add('ok');
+      st.textContent='✓ Estratti '+found+' valori';
+      st.className='pdf-status ok'; zone.classList.add('ok');
     } else {
-      status.textContent='⚠ Nessun dato trovato — inserisci manualmente';
-      status.className='pdf-status err';
+      st.textContent='⚠ Nessun dato — inserisci a mano';
+      st.className='pdf-status err';
     }
-  } catch(e){
-    status.textContent='⚠ Errore lettura PDF — inserisci i dati a mano';
-    status.className='pdf-status err';
+  }catch(e){
+    st.textContent='⚠ Errore lettura PDF';
+    st.className='pdf-status err';
   }
 }
 
 function parseBolletta(txt){
-  // Normalizza
-  const t=txt.replace(/\s+/g,' ');
   let found=0;
+  const T=txt;
 
-  function trySet(id, val){
-    if(!isNaN(val)&&val>0){
-      const el=document.getElementById(id);
-      if(el){ el.value=val; el.classList.add('prefilled'); found++; }
-    }
+  function set(id,val){
+    if(val===null||isNaN(val)||val<=0) return;
+    const el=document.getElementById(id);
+    if(el&&!el.value){ el.value=val; el.classList.add('pre'); found++; }
   }
 
-  function extractNum(pattern){
-    const m=t.match(pattern);
-    if(!m) return null;
-    const raw=m[1].replace(/\./g,'').replace(',','.');
-    return parseFloat(raw);
+  function num(s){
+    if(!s) return null;
+    return parseFloat(s.replace(/\./g,'').replace(',','.'));
   }
 
-  // Consumo kWh nel periodo
-  const kwh = extractNum(/consumo[^€\d]*(\d[\d.,]+)\s*kWh/i)
-           || extractNum(/energia[^€\d]*(\d[\d.,]+)\s*kWh/i)
-           || extractNum(/(\d{2,4})[,.]?\d*\s*kWh/i);
-  if(kwh && kwh < 10000) trySet('l-kwh', Math.round(kwh));
+  // Cerca pattern: etichetta + valore numerico sulla stessa riga o riga successiva
+  function findAfter(label, str, maxChars){
+    const re=new RegExp(label,'i');
+    const idx=str.search(re);
+    if(idx<0) return null;
+    const sub=str.slice(idx,idx+(maxChars||200));
+    const m=sub.match(/(\d[\d.,]+)/);
+    return m?num(m[1]):null;
+  }
 
-  // Consumo Smc
-  const smc = extractNum(/consumo[^€\d]*(\d[\d.,]+)\s*[Ss]mc/i)
-           || extractNum(/gas[^€\d]*(\d[\d.,]+)\s*[Ss]mc/i)
-           || extractNum(/(\d{1,4})[,.]?\d*\s*[Ss]mc/i);
-  if(smc && smc < 5000) trySet('g-smc', Math.round(smc));
+  /* ─── LUCE ─── */
+
+  // Consumo kWh
+  const kwhPat=[
+    T.match(/consumo[\s\S]{0,40}?(\d[\d.,]+)\s*kWh/i),
+    T.match(/energia\s+(?:attiva\s+)?prelevata[\s\S]{0,30}?(\d[\d.,]+)/i),
+    T.match(/(\d{2,4})\s*kWh/i),
+  ];
+  for(const m of kwhPat){ if(m){ const v=num(m[1]); if(v&&v>5&&v<20000){ set('l-kwh',Math.round(v)); break; } } }
 
   // Potenza kW
-  const kw = extractNum(/potenza[^€\d]*(\d[\d.,]+)\s*kW/i)
-          || extractNum(/(\d[\d.,]+)\s*kW(?!h)/i);
-  if(kw && kw < 50) trySet('l-kw', parseFloat(kw));
+  const kwPat=[
+    T.match(/potenza\s+(?:impegnata|disponibile|contrattuale)[\s\S]{0,40}?(\d[\d.,]+)\s*kW/i),
+    T.match(/(\d[\d.,]+)\s*kW(?!h)/i),
+  ];
+  for(const m of kwPat){ if(m){ const v=num(m[1]); if(v&&v>0.5&&v<100){ set('l-kw',v); break; } } }
 
-  // Prezzo energia luce (€/kWh) — cerca valori 0.0x - 0.9x
-  const prezzoL = extractNum(/(?:prezzo|corrispettivo|P\.E[A-Z]?)[^€\d]*0[,.](\d{3,4})\s*€/i)
-               || extractNum(/0[,.](\d{4})\s*€?\s*\/\s*kWh/i);
-  if(prezzoL){
-    const v=parseFloat('0.'+prezzoL.toString().replace('.',''));
-    if(v>0.01&&v<2) trySet('l-old-kwh', v);
-  }
-
-  // Prezzo gas (€/Smc)
-  const prezzoG = extractNum(/(?:prezzo|corrispettivo|C\.M\.E)[^€\d]*0[,.](\d{2,4})\s*€/i)
-               || extractNum(/0[,.](\d{2,4})\s*€?\s*\/\s*[Ss]mc/i);
-  if(prezzoG){
-    const v=parseFloat('0.'+prezzoG.toString().replace('.',''));
-    if(v>0.05&&v<5) trySet('g-old-smc', v);
-  }
+  // Prezzo energia elettrica:
+  // Cerca "vendita di energia elettrica" o "PE" o "corrispettivo energia"
+  const prezzoLucePat=[
+    T.match(/vendita\s+di\s+energia\s+elettrica[\s\S]{0,80}?(0[,.][\d]{3,5})/i),
+    T.match(/(?:^|\n)[^\n]*PE[1-9D][^\n]*?(0[,.][\d]{4,5})/im),
+    T.match(/(?:^|\n)[^\n]*corrispettivo[^\n]*energia[^\n]*(0[,.][\d]{4,5})/im),
+    T.match(/prezzo\s+(?:unitario\s+)?(?:energia[\s\S]{0,20})?(0[,.][\d]{4,5})/i),
+    T.match(/(0[,.][\d]{4})\s*€?\s*[/\\]\s*kWh/i),
+  ];
+  for(const m of prezzoLucePat){ if(m){ const v=num(m[1]); if(v&&v>0.01&&v<2){ set('l-old-kwh',v); break; } } }
 
   // Quota fissa luce
-  const quotaL = extractNum(/quota[^€\d]*(\d{2,3}[,.]?\d*)\s*€?\s*\/?\s*anno/i)
-              || extractNum(/fisso[^€\d]*(\d{2,3}[,.]?\d*)\s*€/i);
-  if(quotaL && quotaL>10 && quotaL<500) trySet('l-old-fixed', Math.round(quotaL));
+  const qfLucePat=[
+    T.match(/quota\s+(?:fissa|parte\s+fissa)[^\n]*?([\d]{2,3}[,.]?[\d]*)\s*€/i),
+    T.match(/(?:^|\n)[^\n]*quota\s+fissa[^\n]*([\d]{2,3}[,.][\d]+)/im),
+  ];
+  for(const m of qfLucePat){ if(m){ const v=num(m[1]); if(v&&v>20&&v<600){ set('l-old-fixed',Math.round(v)); break; } } }
+
+  // Quota potenza
+  const qkwPat=[
+    T.match(/quota\s+potenza[\s\S]{0,40}?(\d{2,3}[,.]?\d*)\s*€/i),
+    T.match(/(\d{2,3})\s*€\s*\/\s*kW\s*\/?\s*anno/i),
+  ];
+  for(const m of qkwPat){ if(m){ const v=num(m[1]); if(v&&v>1&&v<200){ set('l-old-kw',v); break; } } }
+
+  /* ─── GAS ─── */
+
+  // Consumo Smc
+  const smcPat=[
+    T.match(/consumo[\s\S]{0,40}?(\d[\d.,]+)\s*[Ss]mc/i),
+    T.match(/gas\s+naturale[\s\S]{0,60}?(\d[\d.,]+)\s*[Ss]mc/i),
+    T.match(/(\d{1,4}[,.]?\d*)\s*[Ss]mc/i),
+  ];
+  for(const m of smcPat){ if(m){ const v=num(m[1]); if(v&&v>0.5&&v<10000){ set('g-smc',Math.round(v)); break; } } }
+
+  // Prezzo gas: "vendita di gas naturale" o "CME" o "corrispettivo materia gas"
+  const prezzoGasPat=[
+    T.match(/vendita\s+di\s+gas\s+naturale[\s\S]{0,80}?([\d]+[,.][\d]{2,5})/i),
+    T.match(/(?:^|\n)[^\n]*CME[^\n]*([\d]+[,.][\d]{4,5})/im),
+    T.match(/(?:^|\n)[^\n]*(?:materia|commercializzazione)\s+gas[^\n]*([\d]+[,.][\d]{4})/im),
+    T.match(/([\d]+[,.][\d]{4})\s*€?\s*[/\\]\s*[Ss]mc/i),
+  ];
+  for(const m of prezzoGasPat){ if(m){ const v=num(m[1]); if(v&&v>0.05&&v<5){ set('g-old-smc',v); break; } } }
 
   // Quota fissa gas
-  const quotaG = extractNum(/quota[^€\d]*(\d{2,3}[,.]?\d*)\s*€?\s*\/?\s*anno/i);
-  if(quotaG && quotaG>10 && quotaG<500) trySet('g-old-fixed', Math.round(quotaG));
+  const qfGasPat=[
+    T.match(/quota\s+(?:fissa|fissa\s+gas)[^\n]*gas[^\n]*([\d]{2,3}[,.]?[\d]*)\s*€/i),
+    T.match(/(?:^|\n)[^\n]*quota\s+fissa[^\n]*gas[^\n]*([\d]{2,3}[,.][\d]+)/im),
+  ];
+  for(const m of qfGasPat){ if(m){ const v=num(m[1]); if(v&&v>20&&v<600){ set('g-old-fixed',Math.round(v)); break; } } }
 
-  // Quota potenza (€/kW/anno)
-  const quotaKW = extractNum(/potenza[^€\d]*(\d{1,3}[,.]?\d*)\s*€?\s*\/\s*kW/i)
-               || extractNum(/(\d{2,3}[,.]?\d*)\s*€?\s*\/\s*kW\s*\/?\s*anno/i);
-  if(quotaKW && quotaKW>1 && quotaKW<200) trySet('l-old-kw', quotaKW);
+  /* ─── DATI TECNICI → scheda cliente ─── */
+  // POD (IT + 3 cifre + E + 7-11 cifre)
+  const pod=T.match(/\bIT\d{3}E\d{7,11}\b/i);
+  if(pod&&!cliente.pod){ cliente.pod=pod[0].toUpperCase(); saveLS(); renderCliente(); }
+
+  // PDR (14 cifre consecutive)
+  const pdr=T.match(/\b(\d{14})\b/);
+  if(pdr&&!cliente.pdr){ cliente.pdr=pdr[1]; saveLS(); renderCliente(); }
+
+  // Codice Fiscale
+  const cf=T.match(/\b([A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z])\b/i);
+  if(cf&&!cliente.cf){ cliente.cf=cf[1].toUpperCase(); saveLS(); renderCliente(); }
+
+  // Matricola contatore (formato generico 8-10 cifre vicino a "matricola")
+  const mat=T.match(/matricola[\s:]+(\d{6,10})/i);
+  if(mat&&!cliente.matLuce){ cliente.matLuce=mat[1]; saveLS(); renderCliente(); }
 
   return found;
 }
 
-function v(id){ return parseFloat(document.getElementById(id)?.value)||0; }
+/* CALCOLA */
+function gv(id){ return parseFloat(document.getElementById(id)?.value)||0; }
 function fmt(n){ return '€'+(Math.round(n*100)/100).toFixed(2); }
-function fmtInt(n){ return '€'+Math.round(n); }
 
-/* ── CALCOLA ── */
 function calcola(){
-  const nome=document.getElementById('nomeCliente').value.trim()||'Cliente';
-  const mesi=periodoN[periodo];
+  const nome=cliente.nome||'Cliente';
+  const mesi=mesiN[periodo];
   const oggi=new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'});
-  const periodoLabel=periodo==='mensile'?'Confronto mensile':'Confronto bimestrale';
-
-  let oldTot=0, newTot=0;
-  let sections=[];
+  let oldTot=0,newTot=0,sections=[];
 
   if(modeLuce){
-    const kwh    = v('l-kwh');
-    const kw     = v('l-kw')||3;
-    const oldP   = v('l-old-kwh');
-    const oldF   = v('l-old-fixed');
-    const oldKW  = v('l-old-kw');
-    const newP   = v('l-new-kwh');
-    const newF   = v('l-new-fixed');
-    const newKW  = v('l-new-kw');
-
-    // Componenti stimate aggiuntive
-    const oneri     = 0.083; // oneri sistema €/kWh (media ARERA 2024)
-    const trasporto = 0.042; // rete + misura €/kWh
-
-    // Costo periodo = (prezzo + oneri + trasporto) * kwh + (quotaFissa + quotaPotenza*kW) / 12 * mesi
-    const quotaMensileOld = (oldF + oldKW*kw) / 12;
-    const quotaMensileNew = (newF + newKW*kw) / 12;
-
-    const oldCost = ((oldP + oneri + trasporto) * kwh + quotaMensileOld * mesi) * 1.10;
-    const newCost = ((newP + oneri + trasporto) * kwh + quotaMensileNew * mesi) * 1.10;
-
-    oldTot += oldCost;
-    newTot += newCost;
-
-    sections.push({
-      icon:'☀️', label:'Luce',
-      kwh, kw,
-      oldCost: Math.round(oldCost*100)/100,
-      newCost: Math.round(newCost*100)/100,
-      dettagli:[
-        {l:'Consumo periodo', v:kwh+' kWh'},
-        {l:'Potenza', v:kw+' kW'},
-        {l:'Prezzo attuale', v:oldP>0?'€'+oldP+'/kWh':'—'},
-        {l:'Prezzo NewEnergy', v:newP>0?'€'+newP+'/kWh':'—'},
-      ]
-    });
+    const kwh=gv('l-kwh'), kw=gv('l-kw')||3;
+    const oP=gv('l-old-kwh'),oF=gv('l-old-fixed'),oKW=gv('l-old-kw');
+    const nP=gv('l-new-kwh'),nF=gv('l-new-fixed'),nKW=gv('l-new-kw');
+    const oneri=0.083, trasp=0.042;
+    const qO=(oF+oKW*kw)/12, qN=(nF+nKW*kw)/12;
+    const oC=((oP+oneri+trasp)*kwh+qO*mesi)*1.10;
+    const nC=((nP+oneri+trasp)*kwh+qN*mesi)*1.10;
+    oldTot+=oC; newTot+=nC;
+    sections.push({icon:'☀️',label:'Luce',
+      oC:Math.round(oC*100)/100, nC:Math.round(nC*100)/100,
+      det:[{l:'Consumo',v:kwh+' kWh'},{l:'Potenza',v:kw+' kW'},{l:'Prezzo att.',v:oP?'€'+oP+'/kWh':'—'},{l:'Prezzo NE',v:nP?'€'+nP+'/kWh':'—'}]});
   }
-
   if(modeGas){
-    const smc    = v('g-smc');
-    const oldP   = v('g-old-smc');
-    const oldF   = v('g-old-fixed');
-    const newP   = v('g-new-smc');
-    const newF   = v('g-new-fixed');
-
-    // Gas: trasporto ~0.18 €/Smc + accisa ~0.045
-    const trasporto = 0.18;
-    const accisa    = 0.045;
-
-    const quotaMensileOld = oldF / 12;
-    const quotaMensileNew = newF / 12;
-
-    const oldCost = ((oldP + trasporto + accisa) * smc + quotaMensileOld * mesi) * 1.22;
-    const newCost = ((newP + trasporto + accisa) * smc + quotaMensileNew * mesi) * 1.22;
-
-    oldTot += oldCost;
-    newTot += newCost;
-
-    sections.push({
-      icon:'🔥', label:'Gas',
-      smc,
-      oldCost: Math.round(oldCost*100)/100,
-      newCost: Math.round(newCost*100)/100,
-      dettagli:[
-        {l:'Consumo periodo', v:smc+' Smc'},
-        {l:'Prezzo attuale', v:oldP>0?'€'+oldP+'/Smc':'—'},
-        {l:'Prezzo NewEnergy', v:newP>0?'€'+newP+'/Smc':'—'},
-      ]
-    });
+    const smc=gv('g-smc');
+    const oP=gv('g-old-smc'),oF=gv('g-old-fixed');
+    const nP=gv('g-new-smc'),nF=gv('g-new-fixed');
+    const trasp=0.18, acc=0.045;
+    const qO=oF/12, qN=nF/12;
+    const oC=((oP+trasp+acc)*smc+qO*mesi)*1.22;
+    const nC=((nP+trasp+acc)*smc+qN*mesi)*1.22;
+    oldTot+=oC; newTot+=nC;
+    sections.push({icon:'🔥',label:'Gas',
+      oC:Math.round(oC*100)/100, nC:Math.round(nC*100)/100,
+      det:[{l:'Consumo',v:smc+' Smc'},{l:'Prezzo att.',v:oP?'€'+oP+'/Smc':'—'},{l:'Prezzo NE',v:nP?'€'+nP+'/Smc':'—'}]});
   }
 
-  const risparmio = Math.round((oldTot - newTot)*100)/100;
-  oldTot = Math.round(oldTot*100)/100;
-  newTot = Math.round(newTot*100)/100;
+  const risp=Math.round((oldTot-newTot)*100)/100;
+  oldTot=Math.round(oldTot*100)/100; newTot=Math.round(newTot*100)/100;
 
   document.getElementById('ph-date').textContent=oggi;
   document.getElementById('pc-name').textContent=nome;
-  document.getElementById('pc-period').textContent=periodoLabel.toUpperCase();
+  document.getElementById('pc-per').textContent=('CONFRONTO '+periodo).toUpperCase();
 
   let body='';
-
   sections.forEach(s=>{
-    const pct=s.newCost/s.oldCost*100;
-    const risp=Math.round((s.oldCost-s.newCost)*100)/100;
-    body+=`
-    <div class="psec">
+    const r=Math.round((s.oC-s.nC)*100)/100;
+    body+=`<div class="psec">
       <div class="psec-title">${s.icon} ${s.label}</div>
       <div class="cmp-grid">
-        <div class="cmp-box cmp-old">
-          <div class="cmp-lbl">Attuale</div>
-          <div class="cmp-val">${fmt(s.oldCost)}</div>
-          <div class="cmp-sub">del periodo</div>
-        </div>
-        <div class="cmp-box cmp-new">
-          <div class="cmp-lbl">NewEnergy</div>
-          <div class="cmp-val new">${fmt(s.newCost)}</div>
-          <div class="cmp-sub">del periodo</div>
-        </div>
+        <div class="cmp-box cmp-old"><div class="cmp-lbl">Attuale</div><div class="cmp-val">${fmt(s.oC)}</div><div class="cmp-sub">del periodo</div></div>
+        <div class="cmp-box cmp-new"><div class="cmp-lbl">NewEnergy</div><div class="cmp-val new">${fmt(s.nC)}</div><div class="cmp-sub">del periodo</div></div>
       </div>
-      <div class="bar-wrap">
-        <div class="bar-lbls"><span>Costo attuale</span><span>NewEnergy</span></div>
-        <div class="bar-track">
-          <div class="bar-old"></div>
-          <div class="bar-new" id="bn-${s.label}" style="width:0%"></div>
-        </div>
-      </div>
-      <div class="detail-grid">
-        ${s.dettagli.map(d=>`<div class="drow"><span class="dlbl">${d.l}</span><span class="dval">${d.v}</span></div>`).join('')}
-        <div class="drow full"><span class="dlbl">Risparmio ${s.label}</span><span class="dval" style="color:#6dcf9a">${risp>=0?'+':''}${fmt(risp)} / periodo</span></div>
-      </div>
-    </div>`;
+      <div class="bar-wrap"><div class="bar-lbls"><span>Attuale</span><span>NewEnergy</span></div>
+        <div class="bar-track"><div class="bar-old"></div><div class="bar-new" id="bn-${s.label}" style="width:0%"></div></div></div>
+      <div class="dgrid">
+        ${s.det.map(d=>`<div class="drow"><span class="dlbl">${d.l}</span><span class="dval">${d.v}</span></div>`).join('')}
+        <div class="drow full"><span class="dlbl">Risparmio ${s.label}</span><span class="dval" style="color:#6dcf9a">${r>=0?'+':''}${fmt(r)} / periodo</span></div>
+      </div></div>`;
   });
-
-  if(sections.length>1){
-    body+=`
-    <div class="psec">
-      <div class="psec-title">📊 Totale</div>
-      <div class="cmp-grid">
-        <div class="cmp-box cmp-old"><div class="cmp-lbl">Totale attuale</div><div class="cmp-val">${fmt(oldTot)}</div><div class="cmp-sub">del periodo</div></div>
-        <div class="cmp-box cmp-new"><div class="cmp-lbl">Con NewEnergy</div><div class="cmp-val new">${fmt(newTot)}</div><div class="cmp-sub">del periodo</div></div>
-      </div>
-    </div>`;
-  }
-
-  body+=`
-  <div class="risp-box">
-    <div class="risp-lbl">Risparmio stimato</div>
-    <div class="risp-main">${risparmio>=0?'+':''}${fmt(Math.abs(risparmio))}</div>
-    <div class="risp-period">ogni ${periodo==='mensile'?'mese':'2 mesi'} con NewEnergy</div>
-  </div>`;
+  if(sections.length>1)
+    body+=`<div class="psec"><div class="psec-title">📊 Totale</div><div class="cmp-grid">
+      <div class="cmp-box cmp-old"><div class="cmp-lbl">Totale attuale</div><div class="cmp-val">${fmt(oldTot)}</div><div class="cmp-sub">del periodo</div></div>
+      <div class="cmp-box cmp-new"><div class="cmp-lbl">Con NewEnergy</div><div class="cmp-val new">${fmt(newTot)}</div><div class="cmp-sub">del periodo</div></div>
+    </div></div>`;
+  body+=`<div class="risp-box"><div class="risp-lbl">Risparmio stimato</div>
+    <div class="risp-main">${risp>=0?'+':''}${fmt(Math.abs(risp))}</div>
+    <div class="risp-per">ogni ${periodo==='mensile'?'mese':'2 mesi'} con NewEnergy</div></div>`;
 
   document.getElementById('pb-body').innerHTML=body;
-
   const res=document.getElementById('risultato');
   res.style.display='block';
   setTimeout(()=>{
     res.scrollIntoView({behavior:'smooth',block:'start'});
     sections.forEach(s=>{
-      const pct=Math.max(5,s.newCost/s.oldCost*100);
+      const pct=Math.max(5,s.nC/s.oC*100);
       const bar=document.getElementById('bn-'+s.label);
-      if(bar) setTimeout(()=>{bar.style.width=pct+'%';},250);
+      if(bar) setTimeout(()=>bar.style.width=pct+'%',200);
     });
-  },100);
+  },80);
 }
+
+/* SCHEDA CLIENTE */
+function renderCliente(){
+  const c=cliente;
+  document.getElementById('disp-nome').textContent=c.nome||'—';
+  document.getElementById('disp-sub').textContent=c.cf||'';
+  function sf(id,val){
+    const el=document.getElementById(id); if(!el) return;
+    if(val){ el.textContent=val; el.classList.remove('empty'); }
+    else { el.textContent='Non inserito'; el.classList.add('empty'); }
+  }
+  sf('cf-nome',c.nome); sf('cf-cf',c.cf); sf('cf-tel',c.tel);
+  sf('cf-email',c.email); sf('cf-ind',c.ind);
+  sf('cf-pod',c.pod); sf('cf-mat-luce',c.matLuce);
+  sf('cf-pdr',c.pdr); sf('cf-mat-gas',c.matGas);
+}
+
+function openModal(){
+  const c=cliente;
+  ['nome','cf','tel','email','ind','pod','pdr'].forEach(k=>{ const el=document.getElementById('m-'+k); if(el) el.value=c[k]||''; });
+  document.getElementById('m-mat-luce').value=c.matLuce||'';
+  document.getElementById('m-mat-gas').value=c.matGas||'';
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
+function bgClick(e){ if(e.target===document.getElementById('modalBg')) closeModal(); }
+
+function saveCliente(){
+  cliente={
+    nome:document.getElementById('m-nome').value.trim(),
+    cf:document.getElementById('m-cf').value.trim().toUpperCase(),
+    tel:document.getElementById('m-tel').value.trim(),
+    email:document.getElementById('m-email').value.trim(),
+    ind:document.getElementById('m-ind').value.trim(),
+    pod:document.getElementById('m-pod').value.trim().toUpperCase(),
+    matLuce:document.getElementById('m-mat-luce').value.trim(),
+    pdr:document.getElementById('m-pdr').value.trim(),
+    matGas:document.getElementById('m-mat-gas').value.trim(),
+  };
+  saveLS(); renderCliente(); closeModal();
+  showToast('✓ Dati salvati');
+}
+
+/* COPIA */
+function copyField(id,label){
+  const el=document.getElementById(id);
+  if(!el||el.classList.contains('empty')) return;
+  const val=el.textContent;
+  try{
+    navigator.clipboard.writeText(val).then(()=>showToast('✓ '+label+' copiato'));
+  }catch(e){
+    const ta=document.createElement('textarea');
+    ta.value=val; ta.style.cssText='position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('✓ '+label+' copiato');
+  }
+}
+
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+/* INIT */
+loadLS();
+renderCliente();
 </script>
 </body>
 </html>
